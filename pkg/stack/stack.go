@@ -28,3 +28,16 @@ func (s *Stack) Push(value int) {
 	}
 	s.Head = newNode // Update the head of the stack to the new node
 }
+
+// Pop removes and returns the top element of the stack.
+func (s *Stack) Pop() (int, bool) {
+	if s.Head == nil {
+		return 0, false // Empty stack
+	}
+	value := s.Head.Nbr
+	s.Head = s.Head.Next
+	if s.Head != nil {
+		s.Head.Prev = nil // Unlink the popped node
+	}
+	return value, true
+}
