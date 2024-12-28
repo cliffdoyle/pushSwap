@@ -41,3 +41,29 @@ func (s *Stack) Pop() (int, bool) {
 	}
 	return value, true
 }
+
+// AppendNode adds a new node with value n to the end of the stack
+func (s *Stack) AppendNode(n int) {
+	// Create a new node
+	node := &StackNode{Nbr: n}
+
+	if s.Head == nil {
+		// If stack is empty, set its head to the new node
+		s.Head = node
+	} else {
+		// If stack is not empty, find the last node
+		lastNode := s.Head
+		for lastNode.Next != nil {
+			lastNode = lastNode.Next // Traverse to the end of the list
+		}
+		lastNode.Next = node // Link last node's next to new node
+		node.Prev = lastNode // Link new node's prev back to last node
+	}
+}
+
+// InitializeStack initializes stack A with an array of integers
+func (s *Stack) InitializeStack(data []int) {
+	for _, value := range data {
+		s.AppendNode(value) // Append each number to the stack
+	}
+}
