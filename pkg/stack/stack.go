@@ -1,5 +1,7 @@
 package stack
 
+import "fmt"
+
 type StackNode struct {
 	Nbr          int
 	Index        int
@@ -66,4 +68,44 @@ func (s *Stack) InitializeStack(data []int) {
 	for _, value := range data {
 		s.AppendNode(value) // Append each number to the stack
 	}
+}
+
+// IsSorted checks if the stack is sorted in ascending order
+func (s *Stack) IsSorted() bool {
+	if s.Head == nil { // An empty stack is considered sorted
+		return true
+	}
+
+	current := s.Head
+	for current.Next != nil {
+		if current.Nbr > current.Next.Nbr { // Compare current with next node
+			return false // If current is greater than next, it's not sorted
+		}
+		current = current.Next // Move to next node
+	}
+	return true // If all comparisons are fine, it is sorted
+}
+
+// Size returns the number of nodes in the stack.
+func (s *Stack) Size() int {
+	count := 0        // Initialize a counter to zero
+	current := s.Head // Start from the head of the stack
+
+	// Traverse through the stack until we reach the end
+	for current != nil {
+		count++                // Increment count for each node
+		current = current.Next // Move to the next node
+	}
+
+	return count // Return the total count of nodes
+}
+
+// PrintStack prints the values in the stack from top to bottom (head to tail)
+func (s *Stack) PrintStack() {
+	current := s.Head
+	for current != nil {
+		fmt.Print(current.Nbr, " ")
+		current = current.Next
+	}
+	fmt.Println()
 }
