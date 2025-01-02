@@ -109,3 +109,82 @@ func (s *Stack) PrintStack() {
 	}
 	fmt.Println()
 }
+
+// Swap swaps the first two elements on top of a stack.
+func (s *Stack) Swap() {
+	if s.Head == nil || s.Head.Next == nil {
+		// Do nothing if there are fewer than 2 elements
+		return
+	}
+
+	first := s.Head
+	second := first.Next
+
+	// Adjust the third node's Prev pointer, if it exists
+	if second.Next != nil {
+		second.Next.Prev = first
+	}
+
+	// Swap the nodes
+	first.Next = second.Next // First now points to the node after second
+	second.Prev = nil        // Second becomes the new head, so its Prev is nil
+	second.Next = first      // Second points to first
+	first.Prev = second      // First's Prev is now second
+
+	// Update head to point to the new top element (second)
+	s.Head = second
+}
+
+// Rotate shifts up all elements of the specified stack by 1.
+// The first element becomes the last one.
+func (s *Stack) Rotate() {
+	if s.Head == nil || s.Head.Next == nil {
+		// Do nothing if there are fewer than 2 elements
+		return
+	}
+
+	// Save the first element
+	first := s.Head
+
+	// Update head to the second element
+	s.Head = first.Next
+	s.Head.Prev = nil   // The new head's previous pointer should be nil
+
+	// Traverse to the last node
+	lastNode := s.Head
+	for lastNode.Next != nil {
+		lastNode = lastNode.Next
+	}
+
+	// Link the last node to the old head
+	lastNode.Next = first
+	first.Prev = lastNode
+	first.Next = nil // The old head becomes the last node
+}
+
+// ReverseRotate shifts down all elements of the specified stack by 1.
+// The last element becomes the first one.
+func (s *Stack) ReverseRotate() {
+	if s.Head == nil || s.Head.Next == nil {
+		// Do nothing if there are fewer than 2 elements
+		return
+	}
+
+	// Traverse to find the last and penultimate nodes
+    lastNode := s.Head
+    var penultimate *StackNode
+
+    for lastNode.Next != nil {
+        penultimate = lastNode
+        lastNode = lastNode.Next
+    }
+
+	// Update pointers to shift the last element to the front
+    if penultimate != nil {
+        penultimate.Next = nil // Detach last node from
+    }
+    lastNode.Next = s.Head      // Link the last node to the current head
+    s.Head.Prev = lastNode      // Update the current head's previous pointer
+    lastNode.Prev = nil         // The new head's previous pointer should be nil
+    s.Head = lastNode           // Update head to the last node
+}
