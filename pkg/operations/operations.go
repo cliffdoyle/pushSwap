@@ -34,4 +34,8 @@ func Sb(b *stack.Stack) {
 	b.Swap()
 }
 
-
+//Ss swaps the top two elements of both stacks
+func Ss(a,b *stack.Stack) {
+	a.Swap()
+	b.Swap()
+}
