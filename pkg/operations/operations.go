@@ -39,3 +39,22 @@ func Ss(a,b *stack.Stack) {
 	a.Swap()
 	b.Swap()
 }
+//Ra rotates the stack by moving the top element to the bottom
+func Ra(a *stack.Stack) {
+	a.Rotate()
+}
+
+//Rb rotates the stack by moving the top element to the bottom
+func Rb(b *stack.Stack) {
+	b.Rotate()
+}
+//Rr rotates both stacks a and stack b by shifting all elements up by 1
+func Rr(a,b *stack.Stack) {
+	a.Rotate()
+	b.Rotate()
+}
+//Rra rotates the stack by moving the bottom element to the top
+func Rra(a *stack.Stack) {
+	a.ReverseRotate()
+}
+
