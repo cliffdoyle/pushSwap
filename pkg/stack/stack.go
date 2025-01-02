@@ -188,3 +188,27 @@ func (s *Stack) ReverseRotate() {
     lastNode.Prev = nil         // The new head's previous pointer should be nil
     s.Head = lastNode           // Update head to the last node
 }
+
+// FindMaxNode returns the node with the maximum value in the stack.
+// If the stack is empty, it returns an error.
+func (s *Stack) FindMaxNode() (*StackNode, error) {
+	// Check if the stack is empty
+	if s.Head == nil {
+		return nil, fmt.Errorf("stack is empty")
+	}
+
+	// Initialize maxNode with the head of the stack
+	maxNode := s.Head
+
+	// Start checking from the second node
+	current := s.Head.Next
+
+	// Traverse the stack to find the maximum value
+	for current != nil {
+		if current.Nbr > maxNode.Nbr { // Compare current value with maxNode value
+			maxNode = current // Update maxNode if a larger value is found
+		}
+		current = current.Next // Move to the next node
+	}
+	return maxNode, nil // Return the node with the maximum value
+}
