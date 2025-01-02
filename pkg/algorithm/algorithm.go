@@ -60,3 +60,31 @@ func Sort(numbers []int) []string {
 	// Return the list of operations performed (empty in this case, awaiting further logic)
 	return operationsList
 }
+
+// SortThree sorts a stack containing exactly three elements.
+// It returns a list of operations performed to achieve the sorted order.
+func SortThree(a *stack.Stack) []string {
+	operationList := []string{} // List to store the operations performed
+
+	// Find the node with the maximum value in the stack
+	biggestNode, _ := a.FindMaxNode()
+
+	// Case 1: The largest element is at the top of the stack
+	if biggestNode == a.Head {
+		operations.Ra(a)                            // Rotate the stack (move top element to bottom)
+		operationList = append(operationList, "ra") // Record the operation
+
+		// Case 2: The largest element is in the second position
+	} else if a.Head.Next == biggestNode {
+		operations.Rra(a)                            // Reverse rotate the stack (move bottom element to top)
+		operationList = append(operationList, "rra") // Record the operation
+	}
+
+	// Check if the top two elements are out of order
+	if a.Head.Nbr > a.Head.Next.Nbr {
+		operations.Sa(a)                            // Swap the top two elements
+		operationList = append(operationList, "sa") // Record the operation
+	}
+
+	return operationList // Return the list of operations performed
+}
