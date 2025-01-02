@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"push-swap/pkg/algorithm"
 	"push-swap/pkg/validation"
 	"strings"
 )
@@ -23,5 +24,11 @@ func main() {
 	if err != nil {
 		fmt.Println("Error")
 		return
+	}
+
+	// Sort using push_swap algorithm
+	operations := algorithm.Sort(numbers)
+	for _, op := range operations {
+		fmt.Println(op)
 	}
 }

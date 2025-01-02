@@ -2,7 +2,6 @@ package algorithm
 
 import (
 	"fmt"
-	"math"
 	"push-swap/pkg/operations"
 	"push-swap/pkg/stack"
 )
@@ -32,8 +31,8 @@ func Sort(numbers []int) []string {
 	// Base case: if the size of 'a' is 2, swap the top two elements (only needed if unsorted)
 	if a.Size() == 2 {
 		operations.Sa(a)                              // Swap the top two elements of stack 'a'
-		operationsList = append(operationsList, "sa")  // Record the operation
-		a.PrintStack()                                 // Print the final state of stack 'a'
+		operationsList = append(operationsList, "sa") // Record the operation
+		a.PrintStack()                                // Print the final state of stack 'a'
 		return operationsList
 	}
 
@@ -41,7 +40,7 @@ func Sort(numbers []int) []string {
 	// This function handles sorting exactly 3 elements
 	if a.Size() == 3 {
 		operationsList = append(operationsList, SortThree(a)...) // Add the operations from SortThree
-		a.PrintStack() // Print the final state of stack 'a'
+		a.PrintStack()                                           // Print the final state of stack 'a'
 		return operationsList
 	}
 
