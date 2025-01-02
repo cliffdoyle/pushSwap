@@ -6,7 +6,8 @@ type StackNode struct {
 	Nbr          int
 	Index        int
 	Push_cost    int
-	Above_median int
+	Above_median bool
+	Cheapest     bool
 	Target_node  *StackNode
 	Next         *StackNode
 	Prev         *StackNode
@@ -148,7 +149,7 @@ func (s *Stack) Rotate() {
 
 	// Update head to the second element
 	s.Head = first.Next
-	s.Head.Prev = nil   // The new head's previous pointer should be nil
+	s.Head.Prev = nil // The new head's previous pointer should be nil
 
 	// Traverse to the last node
 	lastNode := s.Head
@@ -171,22 +172,22 @@ func (s *Stack) ReverseRotate() {
 	}
 
 	// Traverse to find the last and penultimate nodes
-    lastNode := s.Head
-    var penultimate *StackNode
+	lastNode := s.Head
+	var penultimate *StackNode
 
-    for lastNode.Next != nil {
-        penultimate = lastNode
-        lastNode = lastNode.Next
-    }
+	for lastNode.Next != nil {
+		penultimate = lastNode
+		lastNode = lastNode.Next
+	}
 
 	// Update pointers to shift the last element to the front
-    if penultimate != nil {
-        penultimate.Next = nil // Detach last node from
-    }
-    lastNode.Next = s.Head      // Link the last node to the current head
-    s.Head.Prev = lastNode      // Update the current head's previous pointer
-    lastNode.Prev = nil         // The new head's previous pointer should be nil
-    s.Head = lastNode           // Update head to the last node
+	if penultimate != nil {
+		penultimate.Next = nil // Detach last node from
+	}
+	lastNode.Next = s.Head // Link the last node to the current head
+	s.Head.Prev = lastNode // Update the current head's previous pointer
+	lastNode.Prev = nil    // The new head's previous pointer should be nil
+	s.Head = lastNode      // Update head to the last node
 }
 
 // FindMaxNode returns the node with the maximum value in the stack.
@@ -211,4 +212,42 @@ func (s *Stack) FindMaxNode() (*StackNode, error) {
 		current = current.Next // Move to the next node
 	}
 	return maxNode, nil // Return the node with the maximum value
+}
+
+// CurrentIndex assigns zero-based indices nodes and sets Above_median flags.
+// Nodes with indices less than or equal to the median are Above_median.
+func (s *Stack) CurrentIndex() {
+	if s.Head == nil {
+		return // Exit if the stack is empty
+	}
+
+	size := s.Size()   // Calculate the stack size
+	median := size / 2 // Determine the median index
+	current := s.Head  // Start from the head node
+	index := 0         // Initialize index counter
+
+	// Traverse through the stack
+	for current != nil {
+		current.Index = index                  // Assign zero-based index
+		current.Above_median = index <= median // Set Above_median flag
+		index++                                // Increment index
+		current = current.Next                 // Move to the next node
+	}
+}
+
+// GetCheapest searches for the first node in the stack with the `Cheapest` field set to true.
+// Returns the node if found, otherwise returns nil.
+// The `Cheapest` field indicates the node with the lowest number of operations "cost" to push from source to destination stack.
+func (s *Stack) GetCheapest() *StackNode {
+	current := s.Head // Start from the head of the stack
+
+	// Traverse through the stack nodes
+	for current != nil {
+		if current.Cheapest {
+			return current // Return the first cheapest node
+		}
+		current = current.Next // Move to the next node
+	}
+
+	return nil // Return nil if no cheapest node is found
 }
