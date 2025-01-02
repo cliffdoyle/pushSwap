@@ -23,3 +23,15 @@ var (
 		return Push(a,b)
 	}
 )
+
+//Sa swaps the top two elements of the stack
+func Sa(a *stack.Stack) {
+	a.Swap()
+}
+
+//Sb swaps the top two elements of the stack
+func Sb(b *stack.Stack) {
+	b.Swap()
+}
+
+
