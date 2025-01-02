@@ -61,3 +61,9 @@ func Rra(a *stack.Stack) {
 func Rrb(b *stack.Stack) {
 	b.ReverseRotate()
 }
+
+//Rrr rotates both stacks a and stack b by shifting all elements down by 1
+func Rrr(a,b *stack.Stack) {
+	a.ReverseRotate()
+	b.ReverseRotate()
+}
