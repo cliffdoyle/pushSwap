@@ -16,10 +16,10 @@ func Push(source, destination *stack.Stack) error {
 }
 //Specific aliases
 var (
-	pa=func(b,a *stack.Stack) error {
+	Pa=func(b,a *stack.Stack) error {
 		return Push(b,a)
 	}
-	pb=func(a,b *stack.Stack) error {
+	Pb=func(a,b *stack.Stack) error {
 		return Push(a,b)
 	}
 )
