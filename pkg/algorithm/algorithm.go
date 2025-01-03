@@ -1,7 +1,6 @@
 package algorithm
 
 import (
-	"fmt"
 	"math"
 	"push-swap/pkg/operations"
 	"push-swap/pkg/stack"
@@ -19,13 +18,9 @@ func Sort(numbers []int) []string {
 	// Initialize the stack 'a' with the input numbers
 	a.InitializeStack(numbers)
 
-	// Print the initial state of the stack 'a'
-	a.PrintStack()
-
 	// If the stack is already sorted or has fewer than 2 elements, return an empty list
 	// of operations (no need to sort)
 	if a.IsSorted() || a.Size() < 2 {
-		a.PrintStack() // Print the final state of the stack (no changes made)
 		return operationsList
 	}
 
@@ -33,7 +28,6 @@ func Sort(numbers []int) []string {
 	if a.Size() == 2 {
 		operations.Sa(a)                              // Swap the top two elements of stack 'a'
 		operationsList = append(operationsList, "sa") // Record the operation
-		a.PrintStack()                                // Print the final state of stack 'a'
 		return operationsList
 	}
 
@@ -41,7 +35,6 @@ func Sort(numbers []int) []string {
 	// This function handles sorting exactly 3 elements
 	if a.Size() == 3 {
 		operationsList = append(operationsList, SortThree(a)...) // Add the operations from SortThree
-		a.PrintStack()                                           // Print the final state of stack 'a'
 		return operationsList
 	}
 
@@ -51,15 +44,8 @@ func Sort(numbers []int) []string {
 
 	// If the stack is not sorted and has more than 3 elements, proceed with the sorting logic
 	if !a.IsSorted() {
-		return []string{} // Placeholder for further sorting logic (not yet implemented)
+		return []string{"Error: the algorithm could not sort the stack `a`"}
 	}
-
-	// Print the final state of stack 'a' and stack 'b' (though no operations are done here)
-	a.PrintStack()
-	b.PrintStack()
-
-	// Print the size of stack 'a' for debugging purposes
-	fmt.Println(a.Size())
 
 	// Return the list of operations performed (empty in this case, awaiting further logic)
 	return operationsList

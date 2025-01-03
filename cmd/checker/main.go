@@ -1,5 +1,3 @@
-// then cmd/checker/main.go:
-
 package main
 
 import (
