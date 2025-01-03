@@ -206,3 +206,156 @@ func CostAnalysisA(a, b *stack.Stack) {
 		currentA = currentA.Next
 	}
 }
+
+// SetCheapestA identifies the node in the stack a with the lowest Push_cost value,
+// which represents the least operations necessary to push that node from a to b.
+// It then marks this node as "cheapest" by setting its Cheapest field to true.
+func SetCheapestA(a *stack.Stack) {
+	// Start with the head of the stack
+	currentA := a.Head
+	if currentA == nil {
+		// If the stack is empty, there's nothing to process
+		return
+	}
+
+	// Initialize the cheapest value to the maximum possible integer
+	// add a pointer to the node with the cheapest value as nil
+	cheapestValue := math.MaxInt
+	var cheapestNode *stack.StackNode
+
+	// Iterate through all nodes in the stack
+	for currentA != nil {
+		// Compare the current node's push cost with the current cheapest value
+		if currentA.Push_cost < cheapestValue {
+			// Update the cheapest value and the node with the cheapest value
+			cheapestValue = currentA.Push_cost
+			cheapestNode = currentA
+		}
+		// Move to the next node
+		currentA = currentA.Next
+	}
+	// Mark the node with the cheapest push cost as "cheapest"
+	if cheapestNode != nil {
+		cheapestNode.Cheapest = true
+	}
+}
+
+// PrepForPush prepares a stack for a push operation by rotating the stack
+// until the target node is at the top. It records the operations performed
+// and returns them as a list of operation names.
+func PrepForPush(stack *stack.Stack, target *stack.StackNode, name string) []string {
+	operationsList := []string{} // List to store performed operations
+
+	// If the target node is nil, there is nothing to prepare
+	if target == nil {
+		return operationsList
+	}
+
+	// Rotate the stack until the target node is at the top
+	for stack.Head != target {
+		if name == "a" {
+			// Stack A operations: rotate up (ra) or rotate down (rra)
+			if target.Above_median {
+				operations.Ra(stack) // Perform rotate up
+				operationsList = append(operationsList, "ra")
+			} else {
+				operations.Rra(stack) // Perform rotate down
+				operationsList = append(operationsList, "rra")
+			}
+		} else if name == "b" {
+			// Stack B operations: rotate up (rb) or rotate down (rrb)
+			if target.Above_median {
+				operations.Rb(stack) // Perform rotate up
+				operationsList = append(operationsList, "rb")
+			} else {
+				operations.Rrb(stack) // Perform rotate down
+				operationsList = append(operationsList, "rrb")
+			}
+		}
+	}
+
+	// Return the list of operations performed
+	return operationsList
+}
+
+// MoveAtoB moves the "cheapest" node from Stack `a` to Stack `b`.
+// The function determines the best operations to align both stacks for the push operation.
+// It uses RotateBoth or RevRotateBoth for synchronized rotations when possible.
+func MoveAtoB(a, b *stack.Stack) []string {
+	operationsList := []string{}
+
+	// Find the "cheapest" node in stack a
+	cheapestNode := a.GetCheapest()
+
+	// Align stacks for synchronized rotations
+	if cheapestNode.Above_median && cheapestNode.Target_node.Above_median {
+		operations := operations.RotateBoth(a, b, cheapestNode)
+		operationsList = append(operationsList, operations...)
+	} else if !cheapestNode.Above_median && !cheapestNode.Target_node.Above_median {
+		operations := operations.RevRotateBoth(a, b, cheapestNode)
+		operationsList = append(operationsList, operations...)
+	}
+
+	// Prepare Stack `a` and `b` for the push operation
+	ops := PrepForPush(a, cheapestNode, "a")
+	operationsList = append(operationsList, ops...)
+	ops = PrepForPush(b, cheapestNode.Target_node, "b")
+	operationsList = append(operationsList, ops...)
+
+	// Perform the push operation
+	operations.Pb(a, b)
+	operationsList = append(operationsList, "pb")
+
+	return operationsList
+}
+
+
+// MoveBtoA moves the top node from Stack `b` to Stack `a`.
+// It aligns Stack `a` for the target node from Stack `b` before pushing.
+// Optionally, it swaps the top elements of Stack `a` to maintain order.
+func MoveBtoA(a, b *stack.Stack) []string {
+	operationsList := []string{}
+
+	// Return immediately if Stack `b` is empty
+	if b.Head == nil {
+		return operationsList
+	}
+
+	// Prepare Stack `a` for the target node from Stack `b`
+	ops := PrepForPush(a, b.Head.Target_node, "a")
+	operationsList = append(operationsList, ops...)
+
+	// Perform the push operation
+	operations.Pa(b, a)
+	operationsList = append(operationsList, "pa")
+
+	// If necessary, swap the top elements of Stack `a` to maintain order
+	if a.Head != nil && a.Head.Next != nil && a.Head.Nbr > a.Head.Next.Nbr {
+		operations.Sa(a)
+		operationsList = append(operationsList, "sa")
+	}
+
+	return operationsList
+}
+
+// MinOnTop rotates Stack `a` to bring the node with the minimum value to the top.
+// It determines the direction of rotation based on the node's position relative to the median.
+func MinOnTop(a *stack.Stack) []string {
+	operationsList := []string{}
+
+	// Find the node with the minimum value in Stack `a`
+	minNode, _ := a.FindMinNode()
+
+	// Rotate until the minimum value node is at the top
+	for a.Head.Nbr != minNode.Nbr {
+		if minNode.Above_median {
+			operations.Ra(a) // Rotate up
+			operationsList = append(operationsList, "ra")
+		} else {
+			operations.Rra(a) // Rotate down
+			operationsList = append(operationsList, "rra")
+		}
+	}
+
+	return operationsList
+}
