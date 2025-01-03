@@ -67,3 +67,28 @@ func Rrr(a,b *stack.Stack) {
 	a.ReverseRotate()
 	b.ReverseRotate()
 }
+
+// RotateBoth rotates both stacks up together until either target or cheapest node is at top
+func RotateBoth(a, b *stack.Stack, cheapestNode *stack.StackNode) []string {
+	operationsList := []string{}
+	for b.Head != cheapestNode.Target_node && a.Head != cheapestNode {
+		Rr(a, b) // Rotate both stacks up one position
+		operationsList = append(operationsList, "rr")
+		a.CurrentIndex() // Update indices after rotation
+		b.CurrentIndex()
+	}
+	return operationsList
+}
+
+// RevRotateBoth rotates both stacks down together until either target or cheapest node is at top
+func RevRotateBoth(a, b *stack.Stack, cheapestNode *stack.StackNode) []string {
+	operationsList := []string{}
+	for b.Head != cheapestNode.Target_node && a.Head != cheapestNode {
+		Rrr(a, b) // Rotate both stacks down one position
+		operationsList = append(operationsList, "rrr")
+		a.CurrentIndex() // Update indices after rotation
+		b.CurrentIndex()
+	}
+	return operationsList
+}
+
