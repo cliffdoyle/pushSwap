@@ -111,8 +111,8 @@ func SortStacks(a, b *stack.Stack) []string {
 
 	// While 'a' has more than 3 elements and is not sorted, move nodes from 'a' to 'b'
 	for a.Size() > 3 && !a.IsSorted() {
-		InitNodesA(a, b)              // Initialize nodes in 'a' for sorting
-		ops := MoveAtoB(a, b)         // Move the cheapest node from 'a' to 'b'
+		InitNodesA(a, b)      // Initialize nodes in 'a' for sorting
+		ops := MoveAtoB(a, b) // Move the cheapest node from 'a' to 'b'
 		operationsList = append(operationsList, ops...)
 	}
 
@@ -122,14 +122,14 @@ func SortStacks(a, b *stack.Stack) []string {
 	// Move elements back from 'b' to 'a' in sorted order
 	currentB := b.Head
 	for currentB != nil {
-		InitNodesB(a, b)              // Initialize nodes in 'b' for sorting
+		InitNodesB(a, b) // Initialize nodes in 'b' for sorting
 		// If this is the last node in 'b' and its target is nil, move it directly
 		if currentB.Next == nil && currentB.Target_node == nil {
 			operations.Pa(b, a)
 			operationsList = append(operationsList, "pa")
 			break
 		}
-		ops := MoveBtoA(a, b)         // Move nodes from 'b' to 'a' while maintaining order
+		ops := MoveBtoA(a, b) // Move nodes from 'b' to 'a' while maintaining order
 		operationsList = append(operationsList, ops...)
 
 		// Update current node in 'b' after the move
@@ -145,19 +145,19 @@ func SortStacks(a, b *stack.Stack) []string {
 // InitNodesA prepares stack 'a' for sorting by setting indices, targets, costs, and the cheapest node.
 // It ensures that each node in 'a' knows which node in 'b' it should target for optimal moves.
 func InitNodesA(a, b *stack.Stack) {
-	a.CurrentIndex()       // Update the index of each node in stack 'a'
-	b.CurrentIndex()       // Update the index of each node in stack 'b'
-	SetTargetA(a, b)       // Set target nodes for stack 'a' based on stack 'b'
-	CostAnalysisA(a, b)    // Calculate the cost of moving each node in 'a' to its target in 'b'
-	SetCheapestA(a)        // Identify the cheapest node in 'a' to move
+	a.CurrentIndex()    // Update the index of each node in stack 'a'
+	b.CurrentIndex()    // Update the index of each node in stack 'b'
+	SetTargetA(a, b)    // Set target nodes for stack 'a' based on stack 'b'
+	CostAnalysisA(a, b) // Calculate the cost of moving each node in 'a' to its target in 'b'
+	SetCheapestA(a)     // Identify the cheapest node in 'a' to move
 }
 
 // InitNodesB prepares stack 'b' for sorting by setting indices and targets.
 // It ensures that each node in 'b' knows which node in 'a' it should target for optimal moves.
 func InitNodesB(a, b *stack.Stack) {
-	a.CurrentIndex()       // Update the index of each node in stack 'a'
-	b.CurrentIndex()       // Update the index of each node in stack 'b'
-	SetTargetB(a, b)       // Set target nodes for stack 'b' based on stack 'a'
+	a.CurrentIndex() // Update the index of each node in stack 'a'
+	b.CurrentIndex() // Update the index of each node in stack 'b'
+	SetTargetB(a, b) // Set target nodes for stack 'b' based on stack 'a'
 }
 
 // SetTargetA sets target nodes for each node in stack 'a' by finding the largest
@@ -379,7 +379,6 @@ func MoveAtoB(a, b *stack.Stack) []string {
 
 	return operationsList
 }
-
 
 // MoveBtoA moves the top node from Stack `b` to Stack `a`.
 // It aligns Stack `a` for the target node from Stack `b` before pushing.

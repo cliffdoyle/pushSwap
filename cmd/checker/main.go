@@ -55,5 +55,5 @@ func readInstructions() ([]string, error) {
 	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
-	return instructions,nil
+	return instructions, nil
 }
