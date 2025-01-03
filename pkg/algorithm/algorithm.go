@@ -2,6 +2,7 @@ package algorithm
 
 import (
 	"fmt"
+	"math"
 	"push-swap/pkg/operations"
 	"push-swap/pkg/stack"
 )
@@ -86,4 +87,122 @@ func SortThree(a *stack.Stack) []string {
 	}
 
 	return operationList // Return the list of operations performed
+}
+
+// SetTargetA sets target nodes for each node in stack 'a' by finding the largest
+// number in stack 'b' that is smaller than the current node in 'a'.
+// If no such number exists, it targets the maximum value in stack 'b'.
+func SetTargetA(a, b *stack.Stack) {
+	currentA := a.Head
+	for currentA != nil {
+		// Initialize with smallest possible integer to find largest valid match
+		bestMatchValue := math.MinInt
+		var targetNode *stack.StackNode
+
+		// Search through stack B for the largest number smaller than currentA
+		currentB := b.Head
+		for currentB != nil {
+			// Look for numbers in B that are smaller than current A
+			// but larger than our current best match
+			if currentB.Nbr < currentA.Nbr && currentB.Nbr > bestMatchValue {
+				bestMatchValue = currentB.Nbr
+				targetNode = currentB
+			}
+			currentB = currentB.Next
+		}
+
+		// If no valid target found, default to maximum value in stack B
+		if targetNode == nil {
+			maxNode, _ := b.FindMaxNode()
+			currentA.Target_node = maxNode
+		} else {
+			currentA.Target_node = targetNode
+		}
+		currentA = currentA.Next
+	}
+}
+
+// SetTargetB sets target nodes for each node in stack 'b' by finding the smallest
+// number in stack 'a' that is larger than the current node in 'b'.
+// If no such number exists, it targets the maximum value in stack 'a'.
+func SetTargetB(a, b *stack.Stack) {
+	currentB := b.Head
+	for currentB != nil {
+		// Initialize with largest possible integer to find smallest valid match
+		bestMatchValue := math.MaxInt
+		var targetNode *stack.StackNode
+
+		// Search through stack A for the smallest number larger than currentB
+		currentA := a.Head
+		for currentA != nil {
+			// Look for numbers in A that are larger than current B
+			// but smaller than our current best match
+			if currentA.Nbr > currentB.Nbr && currentA.Nbr < bestMatchValue {
+				bestMatchValue = currentA.Nbr
+				targetNode = currentA
+			}
+			currentA = currentA.Next
+		}
+
+		// If no valid target found, default to maximum value in stack A
+		if targetNode == nil {
+			maxNode, _ := a.FindMaxNode()
+			currentB.Target_node = maxNode
+		} else {
+			currentB.Target_node = targetNode
+		}
+		currentB = currentB.Next
+	}
+}
+
+// CostAnalysisA calculates the cost of pushing each node from Stack `a` to Stack `b`.
+// The cost is determined based on the relative positions of the current node and its target node.
+// - If both nodes are above the median, the function optimizes using shared "RR" operations.
+// - If both nodes are below the median, the function optimizes using shared "RRR" operations.
+// - If the nodes are on opposite sides of the median, individual rotations are used.
+// The calculated cost is stored in the `Push_cost` field of each node in Stack `a`.
+func CostAnalysisA(a, b *stack.Stack) {
+	currentA := a.Head
+	for currentA != nil {
+		baseRotateCost := currentA.Index
+		baseTargetRotateCost := currentA.Target_node.Index
+
+		// If both nodes are below median, use reverse rotation costs instead
+		if !currentA.Above_median {
+			baseRotateCost = a.Size() - currentA.Index
+		}
+		if !currentA.Target_node.Above_median {
+			baseTargetRotateCost = b.Size() - currentA.Target_node.Index
+		}
+
+		// Calculate the cost with and without synchronized operations
+		var finalCost int
+
+		// Case 1: Both nodes are above median - can use RR
+		if currentA.Above_median && currentA.Target_node.Above_median {
+			// Find the higher index to determine how many individual rotations needed
+			maxIndex := max(currentA.Index, currentA.Target_node.Index)
+			minIndex := min(currentA.Index, currentA.Target_node.Index)
+
+			// Cost = shared rotations + remaining individual rotations
+			finalCost = minIndex             // shared RR operations
+			finalCost += maxIndex - minIndex // remaining individual rotations
+
+			// Case 2: Both nodes are below median - can use RRR
+		} else if !currentA.Above_median && !currentA.Target_node.Above_median {
+			maxReverseRotations := max(a.Size()-currentA.Index, b.Size()-currentA.Target_node.Index)
+			minReverseRotations := min(a.Size()-currentA.Index, b.Size()-currentA.Target_node.Index)
+
+			// Cost = shared reverse rotations + remaining individual reverse rotations
+			finalCost = minReverseRotations                        // shared RRR operations
+			finalCost += maxReverseRotations - minReverseRotations // remaining individual rotations
+
+			// Case 3: Nodes are on opposite sides of median - no synchronization possible
+		} else {
+			finalCost = baseRotateCost + baseTargetRotateCost
+		}
+
+		currentA.Push_cost = finalCost
+		currentA = currentA.Next
+	}
 }
