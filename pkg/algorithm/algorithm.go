@@ -45,6 +45,10 @@ func Sort(numbers []int) []string {
 		return operationsList
 	}
 
+	// If a has more than three elements, use SortStacks function to sort it
+	// SortStacks uses helper functions to do the sorting strategically for any n elements
+	operationsList = append(operationsList, SortStacks(a, b)...)
+
 	// If the stack is not sorted and has more than 3 elements, proceed with the sorting logic
 	if !a.IsSorted() {
 		return []string{} // Placeholder for further sorting logic (not yet implemented)
@@ -87,6 +91,73 @@ func SortThree(a *stack.Stack) []string {
 	}
 
 	return operationList // Return the list of operations performed
+}
+
+// SortStacks sorts the elements in stack 'a' in ascending order using an auxiliary stack 'b'.
+// It employs various helper functions to move nodes between stacks, find optimal targets,
+// and minimize the cost of operations. The function returns a list of operations performed.
+func SortStacks(a, b *stack.Stack) []string {
+	operationsList := []string{}
+
+	// Push two top elements from 'a' to 'b' without any calculations initially.
+	if a.Size() > 3 && !a.IsSorted() {
+		operations.Pb(a, b)
+		operationsList = append(operationsList, "pb")
+	}
+	if a.Size() > 3 && !a.IsSorted() {
+		operations.Pb(a, b)
+		operationsList = append(operationsList, "pb")
+	}
+
+	// While 'a' has more than 3 elements and is not sorted, move nodes from 'a' to 'b'
+	for a.Size() > 3 && !a.IsSorted() {
+		InitNodesA(a, b)              // Initialize nodes in 'a' for sorting
+		ops := MoveAtoB(a, b)         // Move the cheapest node from 'a' to 'b'
+		operationsList = append(operationsList, ops...)
+	}
+
+	// Sort the remaining 3 elements in 'a' using a helper function
+	operationsList = append(operationsList, SortThree(a)...)
+
+	// Move elements back from 'b' to 'a' in sorted order
+	currentB := b.Head
+	for currentB != nil {
+		InitNodesB(a, b)              // Initialize nodes in 'b' for sorting
+		// If this is the last node in 'b' and its target is nil, move it directly
+		if currentB.Next == nil && currentB.Target_node == nil {
+			operations.Pa(b, a)
+			operationsList = append(operationsList, "pa")
+			break
+		}
+		ops := MoveBtoA(a, b)         // Move nodes from 'b' to 'a' while maintaining order
+		operationsList = append(operationsList, ops...)
+
+		// Update current node in 'b' after the move
+		currentB = b.Head
+	}
+
+	// Recalculate indices for stack 'a' and bring the minimum node to the top
+	a.CurrentIndex()
+	operationsList = append(operationsList, MinOnTop(a)...)
+	return operationsList
+}
+
+// InitNodesA prepares stack 'a' for sorting by setting indices, targets, costs, and the cheapest node.
+// It ensures that each node in 'a' knows which node in 'b' it should target for optimal moves.
+func InitNodesA(a, b *stack.Stack) {
+	a.CurrentIndex()       // Update the index of each node in stack 'a'
+	b.CurrentIndex()       // Update the index of each node in stack 'b'
+	SetTargetA(a, b)       // Set target nodes for stack 'a' based on stack 'b'
+	CostAnalysisA(a, b)    // Calculate the cost of moving each node in 'a' to its target in 'b'
+	SetCheapestA(a)        // Identify the cheapest node in 'a' to move
+}
+
+// InitNodesB prepares stack 'b' for sorting by setting indices and targets.
+// It ensures that each node in 'b' knows which node in 'a' it should target for optimal moves.
+func InitNodesB(a, b *stack.Stack) {
+	a.CurrentIndex()       // Update the index of each node in stack 'a'
+	b.CurrentIndex()       // Update the index of each node in stack 'b'
+	SetTargetB(a, b)       // Set target nodes for stack 'b' based on stack 'a'
 }
 
 // SetTargetA sets target nodes for each node in stack 'a' by finding the largest
