@@ -190,6 +190,30 @@ func (s *Stack) ReverseRotate() {
 	s.Head = lastNode      // Update head to the last node
 }
 
+// FindMinNode returns the node with the minimum value in the stack.
+// If the stack is empty, it returns an error.
+func (s *Stack) FindMinNode() (*StackNode, error) {
+	// Check if the stack is empty
+	if s.Head == nil {
+		return nil, fmt.Errorf("stack is empty")
+	}
+
+	// Initialize minNode with the head of the stack
+	minNode := s.Head
+
+	// Start checking from the second node
+	current := s.Head.Next
+
+	// Traverse the stack to find the minimum value
+	for current != nil {
+		if current.Nbr < minNode.Nbr { // Compare current value with minNode value
+			minNode = current // Update minNode if a lesser value is found
+		}
+		current = current.Next // Move to the next node
+	}
+	return minNode, nil // Return the node with the maximum value
+}
+
 // FindMaxNode returns the node with the maximum value in the stack.
 // If the stack is empty, it returns an error.
 func (s *Stack) FindMaxNode() (*StackNode, error) {

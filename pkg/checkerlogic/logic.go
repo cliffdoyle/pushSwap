@@ -1,7 +1,3 @@
-
-
-// pkg/checkerlogic/logic.go
-
 package checkerlogic
 
 import (
