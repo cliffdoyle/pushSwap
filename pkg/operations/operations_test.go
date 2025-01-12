@@ -97,3 +97,64 @@ func TestPb(t *testing.T) {
 		t.Errorf("expected new top of stack A to be 90, got: %v", a.Head)
 	}
 }
+
+func TestSa(t *testing.T) {
+	// Create stack A and initialize it with values
+	a := stack.NewStack()
+	a.InitializeStack([]int{10, 20, 30})
+
+	// Perform Sa operation (swap top two elements of stack A)
+	Sa(a)
+
+	// Check the top two elements of stack A after swap
+	if a.Head == nil || a.Head.Nbr != 20 {
+		t.Errorf("expected top of stack A to be 20, got: %v", a.Head)
+	}
+	if a.Head.Next == nil || a.Head.Next.Nbr != 10 {
+		t.Errorf("expected second element of stack A to be 10, got: %v", a.Head.Next)
+	}
+}
+
+func TestSb(t *testing.T) {
+	// Create stack B and initialize it with values
+	b := stack.NewStack()
+	b.InitializeStack([]int{40, 50, 60})
+
+	// Perform Sb operation (swap top two elements of stack B)
+	Sb(b)
+
+	// Check the top two elements of stack B after swap
+	if b.Head == nil || b.Head.Nbr != 50 {
+		t.Errorf("expected top of stack B to be 50, got: %v", b.Head)
+	}
+	if b.Head.Next == nil || b.Head.Next.Nbr != 40 {
+		t.Errorf("expected second element of stack B to be 40, got: %v", b.Head.Next)
+	}
+}
+
+func TestSs(t *testing.T) {
+	// Create stacks A and B and initialize them with values
+	a := stack.NewStack()
+	b := stack.NewStack()
+	a.InitializeStack([]int{70, 80, 90})
+	b.InitializeStack([]int{100, 110, 120})
+
+	// Perform Ss operation (swap top two elements of both stacks)
+	Ss(a, b)
+
+	// Check the top two elements of stack A after swap
+	if a.Head == nil || a.Head.Nbr != 80 {
+		t.Errorf("expected top of stack A to be 80, got: %v", a.Head)
+	}
+	if a.Head.Next == nil || a.Head.Next.Nbr != 70 {
+		t.Errorf("expected second element of stack A to be 70, got: %v", a.Head.Next)
+	}
+
+	// Check the top two elements of stack B after swap
+	if b.Head == nil || b.Head.Nbr != 110 {
+		t.Errorf("expected top of stack B to be 110, got: %v", b.Head)
+	}
+	if b.Head.Next == nil || b.Head.Next.Nbr != 100 {
+		t.Errorf("expected second element of stack B to be 100, got: %v", b.Head.Next)
+	}
+}
