@@ -265,8 +265,83 @@ func TestRrr(t *testing.T) {
 	}
 }
 
+func TestRotateBoth(t *testing.T) {
+	a := stack.NewStack()
+	b := stack.NewStack()
+
+	// Set up stack a
+	a.InitializeStack([]int{1, 2, 3}) // Stack a: [3, 2, 1]
+
+	// Set up stack b
+	b.InitializeStack([]int{4, 5, 6}) // Stack b: [6, 5, 4]
+
+	// Define the cheapestNode
+	cheapestNode := a.Head.Next            // Node with value 2
+	cheapestNode.Target_node = b.Head.Next // Target node is node with value 5
+
+	operationsList := RotateBoth(a, b, cheapestNode)
+
+	expectedOperations := []string{"rr"}
+	expectedA := []int{2, 3, 1} // After rotating stack a twice
+	expectedB := []int{5, 6, 4} // After rotating stack b twice
+
+	if !equalStringSlices(operationsList, expectedOperations) {
+		t.Errorf("RotateBoth operations failed, got: %v, expected: %v", operationsList, expectedOperations)
+	}
+	if !equalSlices(a.ToSlice(), expectedA) {
+		t.Errorf("RotateBoth failed for stack a, got: %v, expected: %v", a.ToSlice(), expectedA)
+	}
+	if !equalSlices(b.ToSlice(), expectedB) {
+		t.Errorf("RotateBoth failed for stack b, got: %v, expected: %v", b.ToSlice(), expectedB)
+	}
+}
+
+func TestRevRotateBoth(t *testing.T) {
+	a := stack.NewStack()
+	b := stack.NewStack()
+
+	// Set up stack a
+	a.InitializeStack([]int{1, 2, 3}) // Stack a: [3, 2, 1]
+
+	// Set up stack b
+	b.InitializeStack([]int{4, 5, 6}) // Stack b: [6, 5, 4]
+
+	// Define the cheapestNode
+	cheapestNode := a.Head.Next            // Node with value 2
+	cheapestNode.Target_node = b.Head.Next // Target node is node with value 5
+
+	operationsList := RevRotateBoth(a, b, cheapestNode)
+
+	expectedOperations := []string{"rrr", "rrr"}
+	expectedA := []int{2, 3, 1} // After reverse rotating stack a twice
+	expectedB := []int{5, 6, 4} // After reverse rotating stack b twice
+
+	if !equalStringSlices(operationsList, expectedOperations) {
+		t.Errorf("RevRotateBoth operations failed, got: %v, expected: %v", operationsList, expectedOperations)
+	}
+	if !equalSlices(a.ToSlice(), expectedA) {
+		t.Errorf("RevRotateBoth failed for stack a, got: %v, expected: %v", a.ToSlice(), expectedA)
+	}
+	if !equalSlices(b.ToSlice(), expectedB) {
+		t.Errorf("RevRotateBoth failed for stack b, got: %v, expected: %v", b.ToSlice(), expectedB)
+	}
+}
+
 // Helper function to compare two slices for equality
 func equalSlices(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// Helper function to compare two slices for equality
+func equalStringSlices(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
 	}
