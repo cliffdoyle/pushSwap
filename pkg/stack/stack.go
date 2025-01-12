@@ -275,3 +275,15 @@ func (s *Stack) GetCheapest() *StackNode {
 
 	return nil // Return nil if no cheapest node is found
 }
+
+// ToSlice converts the stack into a slice of integers.
+// The top of the stack will be the first element in the slice.
+func (s *Stack) ToSlice() []int {
+	var result []int
+	current := s.Head
+	for current != nil {
+		result = append(result, current.Nbr)
+		current = current.Next
+	}
+	return result
+}

@@ -158,3 +158,73 @@ func TestSs(t *testing.T) {
 		t.Errorf("expected second element of stack B to be 100, got: %v", b.Head.Next)
 	}
 }
+
+func TestRa(t *testing.T) {
+	// Create stack A and initialize it with values
+	a := stack.NewStack()
+	a.InitializeStack([]int{1, 2, 3, 4, 5})
+
+	// Perform Ra operation (rotate stack A)
+	Ra(a)
+
+	// Verify the new order of stack A
+	expected := []int{2, 3, 4, 5, 1}
+	actual := a.ToSlice() // Assuming `ToSlice()` converts the stack to a slice for easy comparison
+	if !equalSlices(expected, actual) {
+		t.Errorf("expected stack A to be %v, got %v", expected, actual)
+	}
+}
+
+func TestRb(t *testing.T) {
+	// Create stack B and initialize it with values
+	b := stack.NewStack()
+	b.InitializeStack([]int{10, 20, 30, 40, 50})
+
+	// Perform Rb operation (rotate stack B)
+	Rb(b)
+
+	// Verify the new order of stack B
+	expected := []int{20, 30, 40, 50, 10}
+	actual := b.ToSlice()
+	if !equalSlices(expected, actual) {
+		t.Errorf("expected stack B to be %v, got %v", expected, actual)
+	}
+}
+
+func TestRr(t *testing.T) {
+	// Create stacks A and B and initialize them with values
+	a := stack.NewStack()
+	b := stack.NewStack()
+	a.InitializeStack([]int{1, 2, 3})
+	b.InitializeStack([]int{4, 5, 6})
+
+	// Perform Rr operation (rotate both stacks A and B)
+	Rr(a, b)
+
+	// Verify the new order of stack A
+	expectedA := []int{2, 3, 1}
+	actualA := a.ToSlice()
+	if !equalSlices(expectedA, actualA) {
+		t.Errorf("expected stack A to be %v, got %v", expectedA, actualA)
+	}
+
+	// Verify the new order of stack B
+	expectedB := []int{5, 6, 4}
+	actualB := b.ToSlice()
+	if !equalSlices(expectedB, actualB) {
+		t.Errorf("expected stack B to be %v, got %v", expectedB, actualB)
+	}
+}
+
+// Helper function to compare two slices for equality
+func equalSlices(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
