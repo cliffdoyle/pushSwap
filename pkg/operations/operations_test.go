@@ -216,6 +216,55 @@ func TestRr(t *testing.T) {
 	}
 }
 
+func TestRra(t *testing.T) {
+	a := stack.NewStack()
+	a.InitializeStack([]int{1, 2, 3, 4, 5}) // Stack: [5, 4, 3, 2, 1]
+
+	Rra(a)
+
+	expected := []int{5, 1, 2, 3, 4}
+	result := a.ToSlice()
+
+	if !equalSlices(result, expected) {
+		t.Errorf("Rra failed, got: %v, expected: %v", result, expected)
+	}
+}
+
+func TestRrb(t *testing.T) {
+	b := stack.NewStack()
+	b.InitializeStack([]int{4, 5, 6}) // Stack: [6, 5, 4]
+
+	Rrb(b)
+
+	expected := []int{6, 4, 5}
+	result := b.ToSlice()
+
+	if !equalSlices(result, expected) {
+		t.Errorf("Rrb failed, got: %v, expected: %v", result, expected)
+	}
+}
+
+func TestRrr(t *testing.T) {
+	a := stack.NewStack()
+	b := stack.NewStack()
+	a.InitializeStack([]int{1, 2, 3}) // Stack a: [3, 2, 1]
+	b.InitializeStack([]int{4, 5, 6}) // Stack b: [6, 5, 4]
+
+	Rrr(a, b)
+
+	expectedA := []int{3, 1, 2}
+	expectedB := []int{6, 4, 5}
+	resultA := a.ToSlice()
+	resultB := b.ToSlice()
+
+	if !equalSlices(resultA, expectedA) {
+		t.Errorf("Rrr failed for stack a, got: %v, expected: %v", resultA, expectedA)
+	}
+	if !equalSlices(resultB, expectedB) {
+		t.Errorf("Rrr failed for stack b, got: %v, expected: %v", resultB, expectedB)
+	}
+}
+
 // Helper function to compare two slices for equality
 func equalSlices(a, b []int) bool {
 	if len(a) != len(b) {
