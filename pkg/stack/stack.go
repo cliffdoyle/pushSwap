@@ -275,3 +275,31 @@ func (s *Stack) GetCheapest() *StackNode {
 
 	return nil // Return nil if no cheapest node is found
 }
+
+// ToSlice converts the stack into a slice of integers.
+// The top of the stack will be the first element in the slice.
+func (s *Stack) ToSlice() []int {
+	var result []int
+	current := s.Head
+	for current != nil {
+		result = append(result, current.Nbr)
+		current = current.Next
+	}
+	return result
+}
+
+// FindByIndex returns the node at the specified index in the stack.
+// If the index is out of bounds, it returns nil.
+func (s *Stack) FindByIndex(index int) *StackNode {
+	if index < 0 || index >= s.Size() {
+		return nil // Index out of bounds
+	}
+
+	current := s.Head
+	for i := 0; i < index && current != nil; i++ {
+		current = current.Next
+	}
+
+	return current
+}
+
