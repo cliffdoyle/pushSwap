@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
+
 	"push-swap/pkg/checkerlogic"
 	"push-swap/pkg/validation"
-	"strings"
 )
 
 // main is the entry point for the checker program.
@@ -53,8 +54,20 @@ func main() {
 func readInstructions() ([]string, error) {
 	instructions := []string{}
 	scanner := bufio.NewScanner(os.Stdin)
+	previousEmpty := false
+
 	for scanner.Scan() {
-		instructions = append(instructions, scanner.Text())
+		line := scanner.Text()
+		if line == "" {
+			// If there's any consecutive empty line(s), return an error
+			if previousEmpty {
+				return nil, fmt.Errorf("consecutive empty lines are not allowed")
+			}
+			previousEmpty = true
+		} else {
+			instructions = append(instructions, scanner.Text())
+			previousEmpty = false
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
