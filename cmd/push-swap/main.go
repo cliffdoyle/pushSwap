@@ -9,18 +9,25 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
+	if len(os.Args) < 2 {
 		return
 	}
 
-	arg := os.Args[1] // Read input from command line
-	if arg == "" {
-		fmt.Println()
-		return
+	numbersSlice := []string{}
+
+	if len(os.Args) == 2 {
+		arg := os.Args[1] // Read input from command line as one argument
+		if arg == "" {
+			fmt.Println()
+			return
+		}
+		numbersSlice = strings.Fields(arg)
+	} else if len(os.Args) > 2 {
+		numbersSlice = os.Args[1:] // Read input from command line as multiple arguments
 	}
 
 	// Validate and parse input
-	numbers, err := validation.ParseInput(strings.Fields(arg))
+	numbers, err := validation.ParseInput(numbersSlice)
 	if err != nil {
 		fmt.Println("Error")
 		return

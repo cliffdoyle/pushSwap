@@ -12,19 +12,25 @@ import (
 // main is the entry point for the checker program.
 // It validates input, reads instructions from stdin, and executes the checker logic.
 func main() {
-	if len(os.Args) != 2 {
+	if len(os.Args) < 2 {
 		return
 	}
 
-	// Parse the input string from command-line arguments
-	arg := os.Args[1]
-	if len(arg) == 0 {
-		fmt.Println()
-		return
+	numbersSlice := []string{}
+
+	if len(os.Args) == 2 {
+		arg := os.Args[1] // Read input from command line as one argument
+		if arg == "" {
+			fmt.Println()
+			return
+		}
+		numbersSlice = strings.Fields(arg)
+	} else if len(os.Args) > 2 {
+		numbersSlice = os.Args[1:] // Read input from command line as multiple arguments
 	}
 
 	// Validate and parse the input numbers
-	numbers, err := validation.ParseInput(strings.Fields(arg))
+	numbers, err := validation.ParseInput(numbersSlice)
 	if err != nil {
 		fmt.Println("Error")
 		return
